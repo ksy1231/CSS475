@@ -1,0 +1,33 @@
+/** Practice_5 #1 */
+SELECT P.pnumber, P.dnum, E.Lname, E.address, E.bdate, P.plocation
+FROM PROJECT AS P, DEPARTMENT AS D, EMPLOYEE AS E
+WHERE P.plocation ='Stafford' AND D.dnumber = P.dnum AND D.mgr_ssn = E.Ssn;
+
+/** Priactice_5 #2 */
+SELECT E.Fname, E.Lname, E.address, D.dname
+FROM EMPLOYEE AS E, DEPARTMENT AS D
+WHERE E.dno=D.dnumber AND D.dname='Research';
+
+/** Priactice_5 #3 */
+SELECT L.dlocation, D.dname
+FROM DEPARTMENT AS D, DEPT_LOCATIONS AS L
+WHERE D.dnumber=L.dnumber AND D.dname='Research' ;
+
+/** Practice_5 #4 */
+SELECT E.Fname AS Employ_Fname, S.Fname AS Supervisor_Fname
+FROM EMPLOYEE AS E, EMPLOYEE AS S
+WHERE E.super_ssn=S.Ssn ;
+
+/** Practice_5 #5 */
+SELECT DISTINCT E.salary, E.Fname
+FROM EMPLOYEE AS E;
+
+/** Practice_5 #6 */
+SELECT E.Fname, E.Minit, E.Lname, E.address
+FROM EMPLOYEE AS E
+WHERE E.address LIKE '%Houston%';
+
+/** Practice_5 #7 */
+SELECT E.Fname, E.Minit, E.Lname, E.bdate
+FROM EMPLOYEE AS E
+WHERE E.bdate LIKE '__7_______';

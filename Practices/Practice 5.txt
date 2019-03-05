@@ -1,0 +1,77 @@
+Practice 5 Part I
+
+1.
+CREATE TABLE HOTEL(
+  hotelNo INT NOT NULL,
+  hotelName VARCHAR(15) NOT NULL,
+  cit VARCHAR(15) NOT NULL,
+  PRIMARY KEY(hotelNo),
+  UNIQUE(hotelName)
+);
+
+CREATE TABLE GUEST(
+  guestNo INT NOT NULL,
+  guestName VARCHAR(15) NOT NULL,
+  guestAddress VARCHAR(30),
+  PRIMARY KEY(guestNo),
+  UNIQUE(guestName)
+);
+
+2.
+CREATE TABLE ROOM(
+  roomNo INT NOT NULL CHECK (roomNo <= 9999 AND roomNo >= 1),
+  hotelNo INT NOT NULL,
+  type VARCHAR(10) NOT NULL CHECK (type IN ('Standard', 'Deluxe', 'Suite')),
+  price DECIMAL(3, 2) NOT NULL CHECK (price <= 500.00 AND price >= 50.00),
+  PRIMARY KEY(roomNo),
+  CONSTRAINT ROOMFK FOREIGN KEY(hotelNo) REFERENCES HOTEL(hotelNo)
+);
+
+3.
+CREATE TABLE BOOKING(
+  hotelNo INT NOT NULL,
+  guestNo INT NOT NULL,
+  dateFrom DATE NOT NULL CHECK (dateFrom < dateTo),
+  dateTo DATE NOT NULL,
+  roomNo INT NOT NULL,
+  PRIMARY KEY(dateFrom),
+  CONSTRAINT BOOKING_FK1 FOREIGN KEY(hotelNo) REFERENCES HOTEL(hotelNo),
+  CONSTRAINT BOOKING_FK2 FOREIGN KEY(roomNo) REFERENCES ROOM(roomNo),
+  CONSTRAINT BOOKING_FK3 FOREIGN KEY(guestNo) REFERENCES GUEST(guestNo) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+Practice 5 Part II
+
+1.
+SELECT Pnumber, Dnum, Lname, Address, Bdate 
+FROM PROJECT, DEPARTMENT, EMPLOYEE 
+WHERE Dnum=Dnumber AND Mgr_ssn=Ssn AND Plocation='Stafford';
+
+2.
+SELECT Fname, Lname, Address
+FROM EMPLOYEE, DEPARTMENT
+WHERE Dname='Research' AND Dnumber=Dno;
+
+3.
+SELECT Dlocation
+FROM  DEPARTMENT, DEPT_LOCATIONS
+WHERE DEPARTMENT.Dnumber=DEPT_LOCATIONS.Dnumber AND Dname='Research';
+
+4.
+SELECT E.Fname, E.Lname, S.Fname, S.Lname
+FROM EMPLOYEE AS E, EMPLOYEE AS S
+WHERE E.Super_ssn=S.Ssn;
+
+5.
+SELECT DISTINCT Salary
+FROM EMPLOYEE;
+
+6.
+SELECT Fname, Lname
+FROM EMPLOYEE
+WHERE Address LIKE '%Houston%';
+
+7.
+SELECT Fname, Lname
+FROM EMPLOYEE
+WHERE Bdate LIKE '__7_______';

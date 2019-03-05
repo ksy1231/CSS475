@@ -1,0 +1,160 @@
+create table STUDENT
+(
+Fname VARCHAR(15) NOT NULL,
+Lname VARCHAR(15) NOT NULL,
+Snum INT NOT NULL,
+Ssn CHAR(9) NOT NULL,
+Curr_address VARCHAR(50),
+Curr_phoneNum VARCHAR(15),
+Perman_address VARCHAR(50) NOT NULL,
+Perman_phoneNum VARCHAR(15),
+Bdate VARCHAR(10),
+Sex CHAR(1),
+Class VARCHAR(15),
+Major VARCHAR(20),
+Minor VARCHAR(20),
+Degree VARCHAR(20),
+primary key(Snum),
+unique(Ssn),
+constraint STUFK1 foreign key (Major) references DEPARTMENT(Dcode) on update cascade on delete set null
+constraint STUFK2 foreign key (Minor) references DEPARTMENT(Dcode) on update cascade on delete set null
+);
+
+create table PERMANENT_ADDRESS
+(
+Lname VARCHAR(15) NOT NULL,
+Perman_address VARCHAR(50) NOT NULL,
+City VARCHAR(15),
+State VARCHAR(15),
+Zip_code INT,
+constraint PAFK1 foreign key (Lname) references STUDENT(Lname) on update cascade on delete cascade,
+constraint PAFK2 foreign key (Perman_address) references STUDENT(Perman_address) on update cascade on delete cascade
+);
+
+create table DEPARTMENT
+(
+Dname VARCHAR(15) NOT NULL,
+Dcode INT NOT NULL,
+OfficeNum INT,
+OfficePhoneNum VARCHAR(15),
+College VARCHAR(30),
+primary key(Dcode)
+unique(Dname)
+);
+
+create table COURSE
+(
+Cname VARCHAR(20) NOT NULL,
+Description VARCHAR(100),
+Cnum VARCHAR(15) NOT NULL,
+Num_semesterHours INT,
+Level VARCHAR(10),
+Offering_dept INT NOT NULL,
+primary key(Cnum),
+constraint COUFK foreign key (Offering_dept) references DEPARTMENT(Dcode) on update cascade on delete cascade
+);
+
+create table SECTION
+(
+Instructor VARCHAR(15) NOT NULL,
+Semester VARCHAR(10) NOT NULL,
+Year INT NOT NULL,
+Course VARCHAR(15) NOT NULL,
+SecNum INT NOT NULL,
+primary key(SecNum),
+constraint SECFK foreign key (Course) references COURSE(Cnum) on update cascade on delete cascade
+);
+
+create table GRADE_REPORT
+(
+Snum INT NOT NULL,
+SecNum INT NOT NULL,
+Lgrade CHAR(1) NOT NULL,
+Ngrade CHAR(1) NOT NULL,
+constraint GRFK1 foreign key (Snum) references STUDENT(Snum) on update cascade on delete cascade,
+constraint GRFK2 foreign key (SecNum) references SECTION(SecNum) on update cascade on delete cascade
+);
+
+insert into STUDENT values ('Franklin', 'Wong', 17, 453453453, '638 Voss, Houston, TX', '206) 123 - 4567', '731 Fondren, Bellevue, WA', '425) 654 - 9876', '1990-01-09', 'M', 'Graduate', 9, NULL, 'Ph.D.');
+select snum, fname, lname from student where snum=17;
+update student set curr_phonenum = '425) 765 - 4321' where fname = 'Franklin';
+delete from student where snum = 17;
+
+insert into permanent_address values ('Wong', '731 Fondren, Bellevue, WA', 'Bellevue', 'WA', 98004);
+select lname, perman_address from permanent_address where city = bellevue;
+update permanent_address set city = 'Lynnwood' where zip_code = 98004;
+delete from permanent_address where lname = 'Wong';
+
+insert into department values ('CS', 7, 77777, '425) 576 - 7000', 'University of Texas, Austin');
+select officenum, officephonenum, college from department where dcode = 7;
+update department set officephonenum = '425) 289 - 7000' where dname = 'CS';
+delete from department where dcode = 7;
+
+insert into course values ('Data Structures', 'Integrating mathematical principles with detailed instruction in computer programming.', 'CSS 342', 40, 'Advanced', 7);
+select cname, description from course where cnum = 'CSS 342';
+update course set num_semesterhours = 45 where cname = 'Data Structures';
+delete from course where cnum = 'CSS 342';
+
+insert into section values ('Kim, Wooyoung', 'Fall', 2017, 'CSS 342', 119);
+select instructor, semester, year, course from section where secnum = 119;
+update section set instructor = 'Lee, Wooyoung' where secnum = 119;
+delete from section where secnum = 119;
+
+insert into grade_report values (28, 119, 'B', 3);
+select snum, lgrade, ngrade from grade_report where secnum = 119;
+update grade_report set lgrade = 'A' and ngrade = 4;
+delete from grade_report where snum = 28;
+
+select fname, lname, class, major, minor, degree, dcode, college, gr.snum, lgrade, ngrade from student, department, grade_report gr where dcode = 7 and dcode = 9;
+
+select fname, lname, semester, year, gr.snum from student, section, grade_report gr where semester = 'Spring' and year = 2018;
+
+select * from course, section where cnum = course in (select secnum from section where cnum = course);
+
+select fname, lname, major, minor, dcode from student, department where major = 9 and minor =9;
+
+select fname, lname, instructor, gr.snum, gr.secnum from student, section s, grade_reprot gr where s.secnum = gr.secnum;
+
+#2.
+a.
+select e.fname, e.lname, p.pname, p.dnum, w.hours 
+from employee e, project p, works_on w
+where e.ssn=w.essn and p.pname = 'Computerization' and w.pno = 10 and w.hours<20.0;
+
+b.
+select e.fname,e.lname,s.fname Supervisor_Fname,s.lname Supervisor_Lname
+from employee as e, employee as s
+where e.super_ssn = s.ssn;
+
+c.
+select d.dname, count(*) as NumberOfEmployee
+from department d, employee e
+where e.dno = d.dnumber and e.salary > 32000
+group by d.dname;
+
+d.
+select d.dname, count(*) as NumberOfEmployee
+from department d, employee e
+where e.dno = d.dnumber
+group by d.dname having avg(e.salary)>32000;
+
+e.
+select p.pname, d.dname, count(*) as NumberOfEmployees, sum(w.hours) as TotalHoursWoredPerWeek
+from project p, department d, employee e, works_on w
+where e.dno=d.dnumber and e.ssn=w.essn and p.pnumber=w.pno
+group by p.pname;
+
+f.
+select e.fname, e.lname, d.dname
+from employee e, department d
+where e.dno = d.dnumber and salary = (select max(salary) from employee);
+
+g.
+select fname, lname, super_ssn from employee e where super_ssn =
+(select super_ssn from employee where super_ssn = '888665555');
+
+h.
+select fname, lname, salary
+from employee
+where salary > 10000 + (select min(salary) from employee);
+

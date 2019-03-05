@@ -1,0 +1,80 @@
+Practice 6 Part I
+
+1.
+SELECT * FROM HOTEL;
+
+2.
+SELECT guestName, guestAddress
+FROM GUEST
+WHERE guestAddress LIKE '%Seattle%'
+ORDER BY guestName ASC;
+
+3.
+SELECT COUNT(hotelNo) AS hotel_number
+FROM HOTEL;
+
+4.
+SELECT COUNT(guestNo) AS guest_number
+FROM BOOKING
+WHERE dateFrom LIKE '%March 2015%' OR dateTo LIKE '%March 2015%';
+
+5.
+SELECT DISTINCT city, COUNT(hotelNo) AS hotel_number
+FROM HOTEL
+GROUP BY city;
+
+6.
+SELECT hotelNo, AVG(price)
+FROM ROOM
+GROUP BY hotelNo
+HAVING type='Standard';
+
+7.
+SELECT guestName
+FROM GUEST
+WHERE dateFrom <= CURRENT_DATE AND dateTo >= CURRENT_DATE;
+GROUP BY guestName
+HAVING hotelName='Hilton';
+
+8.
+SELECT hotelName, COUNT(roomNo)
+FROM HOTEL, ROOM
+WHERE city='Las Vegas';
+
+9.
+SELECT hotelNo, type, COUNT(*)
+FROM ROOM
+WHERE type='Double'
+GROUP BY hotelNo
+HAVING COUNT(*)>2;
+
+10.
+SELECT roomNo
+FROM ROOM
+WHERE NOT EXISTS (SELECT *
+                  FROM BOOKING
+                  WHERE ROOM.roomNo=BOOKING.roomNo);
+
+Part II
+SELECT Dname, COUNT(*)
+FROM DEPARTMENT, EMPLOYEE
+WHERE Dnumber=Dno AND salary > 30000 AND Dno IN 
+     (SELECT Dno 
+      FROM EMPLOYEE
+      GROUP BY Dno 
+      HAVING COUNT(*)>2)
+GROUP BY Dname;
+
+Part III
+1.
+a)	Insert into test values(1, 'John', 30);
+b)	Insert into test values(2, 'John', NULL);
+c)	Insert into test values select * from test2;
+d)	Delete from test where id = 1;
+	Delete from test2 where id = 1;
+e)	Update test set id = 3 where name = 'John';
+
+2.
+SELECT Fname, Lname, salary + (salary * 0.25) AS increased_salary
+FROM EMPLOYEE
+WHERE Fname='John' AND Lname='Smith';

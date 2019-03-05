@@ -1,0 +1,126 @@
+.open ART_MUSEUM.db
+
+CREATE TABLE EMPLOYEE
+(
+Enum INT NOT NULL,
+Fname VARCHAR(15) NOT NULL,
+Lname VARCHAR(15) NOT NULL,
+Essn CHAR(9) NOT NULL,
+Bdate DATE,
+Address VARCHAR(30),
+Sex CHAR,
+Salary decimal(10,2),
+PRIMARY KEY (Enum)
+unique(Essn)
+);
+
+CREATE TABLE ARTIST
+(
+Anum INT NOT NULL,
+Fname VARCHAR(15) NOT NULL,
+Lname VARCHAR(15) NOT NULL,
+Assn CHAR(9) NOT NULL,
+Bdate DATE,
+Address VARCHAR(30),
+Sex CHAR,
+Salary decimal(10,2),
+Enum INT NOT NULL,
+PRIMARY KEY (Anum), 
+unique(Assn),
+constraint ARTISTFK FOREIGN KEY (Enum) REFERENCES EMPLOYEE(Enum) on update cascade on delete cascade
+);
+
+CREATE TABLE ARTIST_STYLES
+(
+Anum INT NOT NULL,
+Astyle VARCHAR(20) NOT NULL,
+PRIMARY KEY (Anum, Astyle),
+constraint ARTIST_STYLESFK FOREIGN KEY (Anum) REFERENCES ARTIST(Anum) on update cascade on delete cascade
+);
+
+CREATE TABLE ARTWORK
+(
+AWnum INT NOT NULL,
+AWname VARCHAR(30) NOT NULL,
+Adate DATE,
+Anum INT NOT NULL,
+Mem_num INT NOT NULL,
+PRIMARY KEY (AWnum),
+unique(AWname),
+constraint ARTWORKFK1 FOREIGN KEY (Anum) REFERENCES ARTIST(Anum) on update cascade on delete cascade,
+constraint ARTWORKFK2 FOREIGN KEY (Mem_num) REFERENCES MUSEUM_MEMBER(Mem_num) on update cascade on delete set null
+);
+
+CREATE TABLE MUSEUM_MEMBER
+(
+Mem_num INT NOT NULL,
+Fname VARCHAR(15) NOT NULL,
+Lname VARCHAR(15) NOT NULL,
+Mssn CHAR(9) NOT NULL,
+Bdate DATE,
+Address VARCHAR(30),
+Sex CHAR,
+Enum INT,
+PRIMARY KEY (Mem_num),
+unique(Mssn),
+constraint MEMBERFK FOREIGN KEY (Enum) REFERENCES EMPLOYEE(Enum) on update cascade on delete set null
+);
+
+CREATE TABLE EVENT
+(
+EVnum INT NOT NULL,
+EVname VARCHAR(15) NOT NULL,
+DateFrom DATE,
+DateTo DATE,
+PRIMARY KEY (EVnum)
+);
+
+CREATE TABLE EMP_MAKES_EVENT
+(
+Enum INT NOT NULL,
+EVnum INT NOT NULL,
+PRIMARY KEY (Enum, EVnum),
+constraint EMP_MAKES_EVENTFK1 FOREIGN KEY (Enum) REFERENCES EMPLOYEE(Enum) on update cascade on delete cascade,
+constraint EMP_MAKES_EVENTFK2 FOREIGN KEY (EVnum) REFERENCES EVENT(EVnum) on update cascade on delete cascade
+);
+
+CREATE TABLE MEM_JOINS_EVENT
+(
+Mem_num INT NOT NULL,
+EVnum INT NOT NULL,
+PRIMARY KEY (Mem_num, EVnum),
+constraint MEM_JOINS_EVENTFK1 FOREIGN KEY (Mem_num) REFERENCES MUSEUM_MEMBER(Mem_num) on update cascade on delete cascade,
+constraint MEM_JOINS_EVENTFK2 FOREIGN KEY (EVnum) REFERENCES EVENT(EVnum) on update cascade on delete cascade
+);
+
+insert into EMPLOYEE values (1, 'John', 'Smith', 123456789, '1965-01-09','731 Fondren, Houston, TX','M',30000);
+insert into EMPLOYEE values (2, 'Franklin', 'Wong', 333445555, '1955-12-08','638 Voss, Houston, TX','M',40000);
+insert into EMPLOYEE values (3, 'Alicia', 'Zelaya', 999887777, '1968-01-19','3321 Castle, Spring, TX','F',25000);
+
+insert into ARTIST values (5, 'Jennifer', 'Wallace', 888665555, '1941-06-20','291 Berry, Bellaire, TX','F',43000, 2);
+insert into ARTIST values (7, 'Ramesh', 'Narayan', 987654321, '1962-09-15','975 Fire Oak, Humble, TX','M',38000, 3);
+insert into ARTIST values (13, 'Joyce', 'English', 666884444, '1972-07-31','5631 Rice, Houston, TX','F',25000, 1);
+
+insert into ARTIST_STYLES values (7, 'Post-Impressionism');
+insert into ARTIST_STYLES values (13, 'Cubism');
+insert into ARTIST_STYLES values (5, 'Fauvism');
+
+insert into ARTWORK values (8, 'The Open Window', '1988-05-22', 5, 25);
+insert into ARTWORK values (10, 'The Starry Night', '1995-01-01', 7, 12);
+insert into ARTWORK values (4, 'The Weeping Woman', '1981-06-19', 13, 37);
+
+insert into MUSEUM_MEMBER values (12, 'Ahmad', 'Jabbar', 987987987, '1969-03-29', '980 Dallas, Houston, TX','M', 3);
+insert into MUSEUM_MEMBER values (25, 'James', 'Borg', 453453453, '1977-11-10', '450 Stone, Houston, TX','M', 1);
+insert into MUSEUM_MEMBER values (37, 'Matthew', 'Tom', 654654654, '1958-12-30', '167th Pl SW, Houston, TX','M', 2);
+
+insert into EVENT values(30, 'Star Wars', '2010-09-07', '2010-10-07');
+insert into EVENT values(44, 'Thanksgiving Day', '2013-11-01', '2013-11-30');
+insert into EVENT values(58, 'Christmas', '2016-12-15', '2016-12-30');
+
+insert into EMP_MAKES_EVENT values(1, 44);
+insert into EMP_MAKES_EVENT values(2, 30);
+insert into EMP_MAKES_EVENT values(3, 58);
+
+insert into MEM_JOINS_EVENT values(37, 30);
+insert into MEM_JOINS_EVENT values(25, 58);
+insert into MEM_JOINS_EVENT values(12, 44);
